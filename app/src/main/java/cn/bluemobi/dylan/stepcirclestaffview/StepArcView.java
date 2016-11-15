@@ -71,6 +71,9 @@ public class StepArcView extends View {
 
     private void init() {
         point = new PointF();
+        /**
+         * 通过这个拿到一个资源图片对象
+         */
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow);
 
 
@@ -160,6 +163,13 @@ public class StepArcView extends View {
         paintCurrent.setStyle(Paint.Style.STROKE);//设置填充样式
         paintCurrent.setAntiAlias(true);//抗锯齿功能
         paintCurrent.setStrokeWidth(borderWidth);//设置画笔宽度
+        /**
+         * 设置圆形渐变
+         * 【第一个参数】：中心点x坐标
+         * 【第二个参数】：中心点y坐标
+         * 【第三个参数】：渐变的颜色数组
+         * 【第四个参数】：渐变的颜色数组对应的相对位置
+         */
         paintCurrent.setShader(new SweepGradient(centerX, centerX, new int[]{getResources().getColor(R.color.start_color), getResources().getColor(R.color.end_color)}, null));
         canvas.drawArc(rectF, startAngle, currentAngleLength, false, paintCurrent);
     }
@@ -227,19 +237,29 @@ public class StepArcView extends View {
         Paint mPaint = new Paint();
         mPaint.setStrokeWidth(5);
         mPaint.setColor(getResources().getColor(R.color.start_color));
+        /**要绘制的表盘线的总数**/
         int count = 60;
+        /**要绘制的表盘每个间隔线条之间的夹角**/
         int avgAngle = (360 / (count - 1));
+        /**要绘制的表盘的最长的半径**/
         float radius = centerX - borderWidth - bitmap.getHeight() - 20;
+        /**要绘制的表盘线条长度**/
         int lineLength = 25;
+        /**起始点**/
         PointF point1 = new PointF();
+        /**终止点**/
         PointF point2 = new PointF();
         for (int i = 0; i < count; i++) {
             int angle = avgAngle * i;
+            /**起始点坐标**/
             point1.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * radius;
             point1.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * radius;
 
+            /**终止点坐标**/
             point2.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * (radius - lineLength);
             point2.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * (radius - lineLength);
+
+            /**画线**/
             canvas.drawLine(point1.x, point1.y, point2.x, point2.y, mPaint);
         }
     }
@@ -313,12 +333,18 @@ public class StepArcView extends View {
         progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                /**每次要绘制的圆弧角度**/
                 currentAngleLength = (float) animation.getAnimatedValue();
+
+                /**要绘制的三角形指示器的半径**/
                 float radius=centerX - borderWidth-bitmap.getHeight();
+                /**要绘制的三角形指示器的x坐标**/
                 point.x = (float) (centerX +radius * Math.cos((startAngle + currentAngleLength) * Math.PI / 180));
+                /**要绘制的三角形指示器的y坐标**/
                 point.y = (float) (centerX + radius* Math.sin((startAngle + currentAngleLength) * Math.PI / 180));
                 Log.d("stepView", point + "");
 
+                /**要绘制的圆弧多绘制的部分减掉**/
                 double subtractionScale = borderWidth/2/(centerX*2*Math.PI);
                 double subtractionAngle=subtractionScale*angleLength;
                 if(currentAngleLength>subtractionAngle){
