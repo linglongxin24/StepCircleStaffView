@@ -16,4 +16,7 @@
     <color name="default_color">#999999</color>
     <color name="center_text_color">#0f92f1</color>
     <color name="other_text_color">#62b2cc</color>
+    <color name="color1">#4df0a5</color>
+    <color name="color2">#31bdeb</color>
+    <color name="color3">#baf2d6</color>
 </resources>

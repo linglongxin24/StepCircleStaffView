@@ -170,7 +170,12 @@ public class StepArcView extends View {
          * 【第三个参数】：渐变的颜色数组
          * 【第四个参数】：渐变的颜色数组对应的相对位置
          */
-        paintCurrent.setShader(new SweepGradient(centerX, centerX, new int[]{getResources().getColor(R.color.start_color), getResources().getColor(R.color.end_color)}, null));
+        paintCurrent.setShader(new SweepGradient(centerX, centerX,
+                new int[]{getResources().getColor(R.color.color1),
+                        getResources().getColor(R.color.color2),
+                        getResources().getColor(R.color.color3),
+                        getResources().getColor(R.color.color1)},
+                null));
         canvas.drawArc(rectF, startAngle, currentAngleLength, false, paintCurrent);
     }
 
