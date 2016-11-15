@@ -40,6 +40,14 @@ public class StepArcView extends View {
      */
     private float borderWidth = 38f;
     /**
+     * 最外层圆弧的宽度
+     */
+    private float borderWidthw = 3f;
+    /**
+     * 最外层圆弧和宽圆弧的间距
+     */
+    private float marginWidth = 10f;
+    /**
      * 画步数的数值的字体大小
      */
     private float numberTextSize = 0;
@@ -103,15 +111,19 @@ public class StepArcView extends View {
         /**中心点的x坐标*/
         centerX = (getWidth()) / 2;
         /**指定圆弧的外轮廓矩形区域*/
-        RectF rectF = new RectF(0 + borderWidth, borderWidth, 2 * centerX - borderWidth, 2 * centerX - borderWidth);
+        RectF rectFw = new RectF(0 + borderWidthw, borderWidthw, 2 * centerX - borderWidthw, 2 * centerX - borderWidthw);
 
-        /**【第一步】绘制整体的黄色圆弧*/
+        /**指定圆弧的外轮廓矩形区域*/
+        RectF rectF = new RectF(0 + borderWidth+marginWidth, borderWidth+marginWidth, 2 * centerX - borderWidth-marginWidth, 2 * centerX - borderWidth-marginWidth);
+
+        drawArcBig(canvas, rectFw);
+        /**【第一步】绘制整体的灰色圆弧*/
         drawArcYellow(canvas, rectF);
-        /**【第二步】绘制当前进度的红色圆弧*/
+        /**【第二步】绘制当前进度的渐变色圆弧*/
         drawArcRed(canvas, rectF);
-        /**【第三步】绘制当前进度的红色数字*/
+        /**【第三步】绘制当前进度的蓝色数字*/
         drawTextNumber(canvas, centerX);
-        /**【第四步】绘制"步数"的红色数字*/
+        /**【第四步】绘制"步数"的蓝色数字*/
         drawTextStepString(canvas, centerX);
         /**【第五步】绘制"步数"进度标尺的三角形*/
         drawBitmap(canvas);
@@ -119,6 +131,38 @@ public class StepArcView extends View {
         drawLine(canvas);
     }
 
+    /**
+     * 0.绘制最外层的蓝色圆弧
+     *
+     * @param canvas 画笔
+     * @param rectF  参考的矩形
+     */
+    private void drawArcBig(Canvas canvas, RectF rectF) {
+        Paint paint = new Paint();
+        /** 默认画笔颜色，黄色 */
+        paint.setColor(getResources().getColor(R.color.start_color));
+        /** 结合处为圆弧*/
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        /** 设置画笔的样式 Paint.Cap.Round ,Cap.SQUARE等分别为圆形、方形*/
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        /** 设置画笔的填充样式 Paint.Style.FILL  :填充内部;Paint.Style.FILL_AND_STROKE  ：填充内部和描边;  Paint.Style.STROKE  ：仅描边*/
+        paint.setStyle(Paint.Style.STROKE);
+        /**抗锯齿功能*/
+        paint.setAntiAlias(true);
+        /**设置画笔宽度*/
+        paint.setStrokeWidth(borderWidthw);
+
+        /**绘制圆弧的方法
+         * drawArc(RectF oval, float startAngle, float sweepAngle, boolean useCenter, Paint paint)//画弧，
+         参数一是RectF对象，一个矩形区域椭圆形的界限用于定义在形状、大小、电弧，
+         参数二是起始角(度)在电弧的开始，圆弧起始角度，单位为度。
+         参数三圆弧扫过的角度，顺时针方向，单位为度,从右中间开始为零度。
+         参数四是如果这是true(真)的话,在绘制圆弧时将圆心包括在内，通常用来绘制扇形；如果它是false(假)这将是一个弧线,
+         参数五是Paint对象；
+         */
+        canvas.drawArc(rectF, startAngle, angleLength, false, paint);
+
+    }
 
     /**
      * 1.绘制总步数的黄色圆弧
