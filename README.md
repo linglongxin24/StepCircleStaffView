@@ -1,5 +1,5 @@
 #Android自定义View和属性动画完美结合,创造出酷炫圆环动画,带标尺和进度
->无意中，网友说看了[【Android自定义View实战】之仿QQ运动步数圆弧及动画，Dylan计步中的控件StepArcView](http://blog.csdn.net/linglongxin24/article/details/52936609) 这个之后，突然发奇想，想做这么一个图。在原来的基础上增加一些东西，这样会更好一点。内容更丰富。
+>无意中，在看了[【Android自定义View实战】之仿QQ运动步数圆弧及动画，Dylan计步中的控件StepArcView](http://blog.csdn.net/linglongxin24/article/details/52936609) 这个之后，突然发奇想，想做这么一个图。在原来的基础上增加一些东西，这样会更好一点。内容更丰富。
 
 >主要是在原来的基础上添加了如下功能
 
