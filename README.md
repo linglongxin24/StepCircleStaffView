@@ -1,12 +1,7 @@
 #Android自定义View和属性动画完美结合,创造出酷炫圆环动画,带标尺和进度
->无意中，网友说看了[【Android自定义View实战】之仿QQ运动步数圆弧及动画，Dylan计步中的控件StepArcView](http://blog.csdn.net/linglongxin24/article/details/52936609) 这个之后，突然，产品经理
-设计了一张这样的图 ：
+>无意中，网友说看了[【Android自定义View实战】之仿QQ运动步数圆弧及动画，Dylan计步中的控件StepArcView](http://blog.csdn.net/linglongxin24/article/details/52936609) 这个之后，突然发奇想，想做这么一个图。在原来的基础上增加一些东西，这样会更好一点。内容更丰富。
 
-需求图 
-
-![需求图](https://github.com/linglongxin24/StepCircleStaffView/blob/master/screenshorts/demo.png?raw=true)
-
->我看了好久，主要是在原来的基础上添加了如下功能
+>主要是在原来的基础上添加了如下功能
 
  * 1.进度圆环的颜色是渐变。
  * 2.添加一个进度标尺，类似与钟表表盘的样子，用来显示刻度。
