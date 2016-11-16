@@ -9,15 +9,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -25,8 +21,6 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-
-import java.util.logging.Logger;
 
 
 /**
@@ -82,7 +76,7 @@ public class StepArcView extends View {
         /**
          * 通过这个拿到一个资源图片对象
          */
-        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow_top);
 
 
     }
@@ -245,7 +239,7 @@ public class StepArcView extends View {
      */
     private void drawTextStepString(Canvas canvas, float centerX) {
         Paint vTextPaint = new Paint();
-        vTextPaint.setTextSize(dipToPx(13));
+        vTextPaint.setTextSize(dpToPx(13));
         vTextPaint.setTextAlign(Paint.Align.CENTER);
         vTextPaint.setAntiAlias(true);//抗锯齿功能
         vTextPaint.setColor(getResources().getColor(R.color.other_text_color));
@@ -270,10 +264,12 @@ public class StepArcView extends View {
         // 定义矩阵对象
         Matrix matrix = new Matrix();
         // 参数为正则向右旋转
-        matrix.postRotate(startAngle + currentAngleLength + 90);
+        matrix.preRotate(startAngle + currentAngleLength + 90,point.x,point.x);
+//        matrix.setRotate(startAngle + currentAngleLength + 90);
         Bitmap dstbmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
                 matrix, true);
         Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);//这里不管怎么设置都不影响最终图像
+//        canvas.drawBitmap(bitmap, point.x-bitmap.getWidth()/2 , point.y-bitmap.getHeight()/2 , mBitmapPaint);
         canvas.drawBitmap(dstbmp, point.x - dstbmp.getWidth() / 2, point.y - dstbmp.getHeight() / 2, mBitmapPaint);
     }
 
@@ -291,7 +287,7 @@ public class StepArcView extends View {
         /**要绘制的表盘每个间隔线条之间的夹角**/
         int avgAngle = (360 / (count - 1));
         /**要绘制的表盘的最长的半径**/
-        float radius = centerX - borderWidth - bitmap.getHeight() - 20;
+        float radius = centerX - borderWidthw-borderWidth - bitmap.getWidth() - marginWidth*3;
         /**要绘制的表盘线条长度**/
         int lineLength = 25;
         /**起始点**/
@@ -328,13 +324,13 @@ public class StepArcView extends View {
     }
 
     /**
-     * dip 转换成px
+     * dp 转换成px
      *
      * @param dip
      * @return
      */
 
-    private int dipToPx(float dip) {
+    private int dpToPx(float dip) {
         float density = getContext().getResources().getDisplayMetrics().density;
         return (int) (dip * density + 0.5f * (dip >= 0 ? 1 : -1));
     }
@@ -386,7 +382,7 @@ public class StepArcView extends View {
                 currentAngleLength = (float) animation.getAnimatedValue();
 
                 /**要绘制的三角形指示器的半径**/
-                float radius=centerX - borderWidth-bitmap.getHeight();
+                float radius=centerX - borderWidth-bitmap.getWidth();
                 /**要绘制的三角形指示器的x坐标**/
                 point.x = (float) (centerX +radius * Math.cos((startAngle + currentAngleLength) * Math.PI / 180));
                 /**要绘制的三角形指示器的y坐标**/
@@ -414,13 +410,13 @@ public class StepArcView extends View {
         String s = String.valueOf(num);
         int length = s.length();
         if (length <= 4) {
-            numberTextSize = dipToPx(40);
+            numberTextSize = dpToPx(40);
         } else if (length > 4 && length <= 6) {
-            numberTextSize = dipToPx(30);
+            numberTextSize = dpToPx(30);
         } else if (length > 6 && length <= 8) {
-            numberTextSize = dipToPx(25);
+            numberTextSize = dpToPx(25);
         } else if (length > 8) {
-            numberTextSize = dipToPx(20);
+            numberTextSize = dpToPx(20);
         }
     }
 
