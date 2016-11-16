@@ -313,7 +313,7 @@ public class StepArcView extends View {
      */
     private void drawLine(Canvas canvas) {
         Paint mPaint = new Paint();
-        mPaint.setStrokeWidth(5);
+        mPaint.setStrokeWidth(dpToPx(2));
         mPaint.setColor(getResources().getColor(R.color.start_color));
         /**要绘制的表盘线的总数**/
         int count = 60;
