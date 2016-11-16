@@ -22,12 +22,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.logging.Logger;
+
 
 /**
  * Created by DylanAndroid on 2016/5/26.
  * 显示步数的圆弧
  */
 public class StepArcView extends View {
+    private final String TAG = "StepArcView";
 
     /**
      * 圆弧的宽度
@@ -71,15 +74,11 @@ public class StepArcView extends View {
     private Bitmap bitmap;
     private int totalStepNum;
 
-    private void init() {
-        point = new PointF();
-        /**
-         * 通过这个拿到一个资源图片对象
-         */
-        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow_top);
-
-
-    }
+    /**
+     * 要绘制的三角形指示器的半径
+     **/
+    private float triangleRadius;
+    private float clockRadius;
 
     public StepArcView(Context context) {
         super(context);
@@ -99,6 +98,41 @@ public class StepArcView extends View {
     }
 
 
+    private void init() {
+        point = new PointF();
+        /**
+         * 通过这个拿到一个资源图片对象
+         */
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow_top);
+        setBorderWidth(dpToPx(12));
+        setBorderWidthw(1);
+        setMarginWidth(3);
+    }
+
+    public float getBorderWidth() {
+        return borderWidth;
+    }
+
+    public void setBorderWidth(float borderWidth) {
+        this.borderWidth = borderWidth;
+    }
+
+    public float getBorderWidthw() {
+        return borderWidthw;
+    }
+
+    public void setBorderWidthw(float borderWidthw) {
+        this.borderWidthw = borderWidthw;
+    }
+
+    public float getMarginWidth() {
+        return marginWidth;
+    }
+
+    public void setMarginWidth(float marginWidth) {
+        this.marginWidth = marginWidth;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -108,7 +142,7 @@ public class StepArcView extends View {
         RectF rectFw = new RectF(0 + borderWidthw, borderWidthw, 2 * centerX - borderWidthw, 2 * centerX - borderWidthw);
 
         /**指定圆弧的外轮廓矩形区域*/
-        RectF rectF = new RectF(0 + borderWidth+marginWidth, borderWidth+marginWidth, 2 * centerX - borderWidth-marginWidth, 2 * centerX - borderWidth-marginWidth);
+        RectF rectF = new RectF(0 + borderWidth + marginWidth, borderWidth + marginWidth, 2 * centerX - borderWidth - marginWidth, 2 * centerX - borderWidth - marginWidth);
 
         drawArcBig(canvas, rectFw);
         /**【第一步】绘制整体的灰色圆弧*/
@@ -197,7 +231,7 @@ public class StepArcView extends View {
     private void drawArcRed(Canvas canvas, RectF rectF) {
         Paint paintCurrent = new Paint();
         paintCurrent.setStrokeJoin(Paint.Join.ROUND);
-        paintCurrent.setStrokeCap(Paint.Cap.SQUARE);//圆角弧度
+//        paintCurrent.setStrokeCap(Paint.Cap.SQUARE);//圆角弧度
         paintCurrent.setStyle(Paint.Style.STROKE);//设置填充样式
         paintCurrent.setAntiAlias(true);//抗锯齿功能
         paintCurrent.setStrokeWidth(borderWidth);//设置画笔宽度
@@ -214,6 +248,7 @@ public class StepArcView extends View {
                         getResources().getColor(R.color.color3),
                         getResources().getColor(R.color.color1)},
                 null));
+
         canvas.drawArc(rectF, startAngle, currentAngleLength, false, paintCurrent);
     }
 
@@ -243,15 +278,15 @@ public class StepArcView extends View {
         vTextPaint.setTextAlign(Paint.Align.CENTER);
         vTextPaint.setAntiAlias(true);//抗锯齿功能
         vTextPaint.setColor(getResources().getColor(R.color.other_text_color));
-        String stepString = "目标 "+totalStepNum;
+        String stepString = "目标 " + totalStepNum;
         Rect bounds = new Rect();
         vTextPaint.getTextBounds(stepString, 0, stepString.length(), bounds);
         canvas.drawText(stepString, centerX, getHeight() / 2 + bounds.height() + getFontHeight(numberTextSize), vTextPaint);
         canvas.save();
-         stepString = "今天步数";
-         bounds = new Rect();
+        stepString = "今天步数";
+        bounds = new Rect();
         vTextPaint.getTextBounds(stepString, 0, stepString.length(), bounds);
-        canvas.drawText(stepString, centerX, getHeight() / 2  - getFontHeight(numberTextSize), vTextPaint);
+        canvas.drawText(stepString, centerX, getHeight() / 2 - getFontHeight(numberTextSize), vTextPaint);
 
     }
 
@@ -264,12 +299,10 @@ public class StepArcView extends View {
         // 定义矩阵对象
         Matrix matrix = new Matrix();
         // 参数为正则向右旋转
-        matrix.preRotate(startAngle + currentAngleLength + 90,point.x,point.x);
-//        matrix.setRotate(startAngle + currentAngleLength + 90);
+        matrix.preRotate(startAngle + currentAngleLength + 90, point.x, point.x);
         Bitmap dstbmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
                 matrix, true);
         Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);//这里不管怎么设置都不影响最终图像
-//        canvas.drawBitmap(bitmap, point.x-bitmap.getWidth()/2 , point.y-bitmap.getHeight()/2 , mBitmapPaint);
         canvas.drawBitmap(dstbmp, point.x - dstbmp.getWidth() / 2, point.y - dstbmp.getHeight() / 2, mBitmapPaint);
     }
 
@@ -286,10 +319,11 @@ public class StepArcView extends View {
         int count = 60;
         /**要绘制的表盘每个间隔线条之间的夹角**/
         int avgAngle = (360 / (count - 1));
-        /**要绘制的表盘的最长的半径**/
-        float radius = centerX - borderWidthw-borderWidth - bitmap.getWidth() - marginWidth*3;
+
         /**要绘制的表盘线条长度**/
-        int lineLength = 25;
+        int lineLength = dpToPx(8);
+        /**要绘制的表盘的最长的半径**/
+        clockRadius = centerX - marginWidth - borderWidthw - borderWidth - bitmap.getHeight() - marginWidth - lineLength;
         /**起始点**/
         PointF point1 = new PointF();
         /**终止点**/
@@ -297,12 +331,12 @@ public class StepArcView extends View {
         for (int i = 0; i < count; i++) {
             int angle = avgAngle * i;
             /**起始点坐标**/
-            point1.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * radius;
-            point1.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * radius;
+            point1.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * clockRadius;
+            point1.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * clockRadius;
 
             /**终止点坐标**/
-            point2.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * (radius - lineLength);
-            point2.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * (radius - lineLength);
+            point2.x = centerX + (float) Math.cos(angle * (Math.PI / 180)) * (clockRadius - lineLength);
+            point2.y = centerX + (float) Math.sin(angle * (Math.PI / 180)) * (clockRadius - lineLength);
 
             /**画线**/
             canvas.drawLine(point1.x, point1.y, point2.x, point2.y, mPaint);
@@ -354,7 +388,7 @@ public class StepArcView extends View {
         /**所走步数占用总共步数的百分比*/
         float scale = (float) currentCounts / totalStepNum;
         /**换算成弧度最后要到达的角度的长度-->弧长*/
-        float currentAngleLength = scale * angleLength;
+        currentAngleLength = scale * angleLength;
         /**开始执行动画*/
         setAnimation(0, currentAngleLength, animationLength);
     }
@@ -380,21 +414,14 @@ public class StepArcView extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 /**每次要绘制的圆弧角度**/
                 currentAngleLength = (float) animation.getAnimatedValue();
-
-                /**要绘制的三角形指示器的半径**/
-                float radius=centerX - borderWidth-bitmap.getWidth();
+                Log.d(TAG, "currentAngleLength=" + currentAngleLength);
+                triangleRadius = centerX - marginWidth - borderWidthw - borderWidth - bitmap.getWidth();
                 /**要绘制的三角形指示器的x坐标**/
-                point.x = (float) (centerX +radius * Math.cos((startAngle + currentAngleLength) * Math.PI / 180));
+                point.x = (float) (centerX + triangleRadius * Math.cos((startAngle + currentAngleLength) * Math.PI / 180));
                 /**要绘制的三角形指示器的y坐标**/
-                point.y = (float) (centerX + radius* Math.sin((startAngle + currentAngleLength) * Math.PI / 180));
-                Log.d("stepView", point + "");
-
-                /**要绘制的圆弧多绘制的部分减掉**/
-                double subtractionScale = borderWidth/2/(centerX*2*Math.PI);
-                double subtractionAngle=subtractionScale*angleLength;
-                if(currentAngleLength>subtractionAngle){
-                    currentAngleLength-=subtractionAngle;
-                }
+                point.y = (float) (centerX + triangleRadius * Math.sin((startAngle + currentAngleLength) * Math.PI / 180));
+                Log.d(TAG, centerX + "");
+                Log.d(TAG, point + "");
                 invalidate();
             }
         });
